@@ -90,9 +90,9 @@ function setDaysForecastCards(cityDays) {
       pHumidity.innerText = `Humidity: ${cityDays[i].main.humidity} `;
       divCardBody.appendChild(title);
       divCardBody.appendChild(img);
-      divCard.appendChild(pTemp);
-      divCard.appendChild(pWind);
-      divCard.appendChild(pHumidity);
+      divCardBody.appendChild(pTemp);
+      divCardBody.appendChild(pWind);
+      divCardBody.appendChild(pHumidity);
       divCard.appendChild(divCardBody);
       divCol.appendChild(divCard);
       document.getElementById("forecast").appendChild(divCol);
