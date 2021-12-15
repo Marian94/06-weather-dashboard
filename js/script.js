@@ -13,7 +13,7 @@ function alertMessage(message, type, removeClass) {
   alertMessageCustom.hidden = false;
 }
 
-function uvIndex(uvIdx) {
+function setUV(uvIdx) {
   const label = document.createElement("label");
   const uvIndex = document.getElementById("uvIndex");
   uvIndex.innerText = `UV Index:`;
@@ -36,12 +36,12 @@ function uvIndex(uvIdx) {
   uvIndex.appendChild(label);
 }
 
-function getUvIndex({ lat, lon }) {
+function getDataUV({ lat, lon }) {
   const urlUvIndex = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
   fetch(urlUvIndex)
     .then(function (data) {
       data.json().then(function (response) {
-        uvIndex(response.current.uvi);
+        setUV(response.current.uvi);
       });
     })
     .catch(function (err) {
@@ -60,10 +60,10 @@ function setWeatherInformation({ name, main, weather, wind, coord }) {
   document.getElementById(
     "iconImage"
   ).src = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
-  getUvIndex(coord);
+  getDataUV(coord);
 }
 
-function setDaysForecastCards(cityDays) {
+function createForecastCards(cityDays) {
   for (let i = 0; i < cityDays.length; i++) {
     if (document.getElementsByClassName(`card-${i}`).length === 0) {
       const divCol = document.createElement("div");
@@ -114,13 +114,14 @@ function setDaysForecastCards(cityDays) {
   }
 }
 
-function setDaysForecast(cityName) {
+function getDataForecast(cityName) {
   const urlCityName = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}`;
   return fetch(urlCityName).then((data) => data.json());
 }
-function searchAgain(e) {
+
+function searchByHistoryButtons(e) {
   const cityName = e.target.value;
-  searchCity(cityName, false);
+  getCityWeather(cityName, false);
 }
 
 function createHistoryButtons(renderOneButton) {
@@ -133,7 +134,7 @@ function createHistoryButtons(renderOneButton) {
       button.classList.add("btn", "btn-primary");
       button.value = localStorageValue[localStorageValue.length - 1];
       button.innerText = localStorageValue[localStorageValue.length - 1];
-      button.addEventListener("click", searchAgain);
+      button.addEventListener("click", searchByHistoryButtons);
       document.getElementById("historyButtons").appendChild(button);
     } else {
       for (let i = 0; i < localStorageValue.length; i++) {
@@ -141,15 +142,15 @@ function createHistoryButtons(renderOneButton) {
         button.classList.add("btn", "btn-primary");
         button.value = localStorageValue[i];
         button.innerText = localStorageValue[i];
-        button.addEventListener("click", searchAgain);
+        button.addEventListener("click", searchByHistoryButtons);
         document.getElementById("historyButtons").appendChild(button);
       }
     }
   }
 }
 
-function searchCity(cityName, isSearchButton) {
-  const urlCityName = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
+function getCityWeather(cityName, isSearchButton) {
+  const urlCityName = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
 
   fetch(urlCityName)
     .then(function (data) {
@@ -178,12 +179,12 @@ function searchCity(cityName, isSearchButton) {
           if (isSearchButton) {
             createHistoryButtons(true);
           }
-          setDaysForecast(cityName).then((data) => {
+          getDataForecast(cityName).then((data) => {
             const arrDays = [];
             for (let i = 0; i < 5; i++) {
               arrDays.push(data.list[i * 8]);
             }
-            setDaysForecastCards(arrDays);
+            createForecastCards(arrDays);
           });
         }
         if (response.cod === "404") {
@@ -203,9 +204,10 @@ searchButton.addEventListener("click", () => {
   const cityName = document.getElementById("floatingInput").value;
   if (cityName !== "") {
     //call API
-    searchCity(cityName, true);
+    getCityWeather(cityName, true);
   } else {
     alertMessage("Please add a City", "danger");
   }
 });
+
 createHistoryButtons(false);
