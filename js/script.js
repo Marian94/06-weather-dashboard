@@ -52,7 +52,7 @@ function getUvIndex({ lat, lon }) {
 function setWeatherInformation({ name, main, weather, wind, coord }) {
   const dt = new Date();
   document.getElementById("cityName").innerText = `${name} (${
-    dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDay()
+    dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate()
   })`;
   document.getElementById("temp").innerText = `Temp: ${main.temp} °F`;
   document.getElementById("wind").innerText = `Wind speed: ${wind.speed} MPH`;
