@@ -1,0 +1,65 @@
+:root {
+  --navbar-color-background: rgb(34, 193, 195);
+}
+nav {
+  background-color: #0093e9;
+  background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
+}
+
+.card {
+  background-color: #8bc6ec;
+  background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
+  margin: 10px;
+}
+
+img {
+  width: 25px;
+}
+
+button {
+  margin-top: 10px;
+  background-color: #f4d03f;
+  background-image: linear-gradient(132deg, #f4d03f 0%, #16a085 100%);
+}
+
+.low {
+  background-color: #f4d03f;
+  background-image: linear-gradient(132deg, #f4d03f 0%, #16a085 100%);
+  border-radius: 25px;
+  padding: 10px;
+}
+
+.moderate {
+  background-color: #f3fb7e;
+  background-image: linear-gradient(62deg, #f3fb7e 0%, #f7ce68 100%);
+  border-radius: 25px;
+  padding: 10px;
+}
+
+.high {
+  background-color: #fb967e;
+  background-image: linear-gradient(62deg, #fb967e 0%, #f7ce68 100%);
+  border-radius: 25px;
+  padding: 10px;
+}
+
+.very-high {
+  background-color: #f55b3f;
+  background-image: linear-gradient(62deg, #f55b3f 0%, #f77968 100%);
+
+  border-radius: 25px;
+  padding: 10px;
+}
+
+.extreme {
+  background-color: #4158d0;
+  background-image: linear-gradient(
+    43deg,
+    #4158d0 0%,
+    #c850c0 46%,
+    #8b70ff 100%
+  );
+
+  border-radius: 25px;
+  padding: 10px;
+}
