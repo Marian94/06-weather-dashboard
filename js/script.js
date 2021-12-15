@@ -118,27 +118,37 @@ function setDaysForecast(cityName) {
   const urlCityName = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}`;
   return fetch(urlCityName).then((data) => data.json());
 }
+function searchAgain(e) {
+  const cityName = e.target.value;
+  searchCity(cityName, false);
+}
 
 function createHistoryButtons(renderOneButton) {
-  const localStorageValue = localStorage
-    .getItem(`cityNames-localStorage`)
-    .split(",");
-  if (renderOneButton) {
-    const button = document.createElement("button");
-    button.classList.add("btn", "btn-primary");
-    button.innerText = localStorageValue[localStorageValue.length - 1];
-    document.getElementById("historyButtons").appendChild(button);
-  } else {
-    for (let i = 0; i < localStorageValue.length; i++) {
+  if (localStorage.getItem(`cityNames-localStorage`)) {
+    const localStorageValue = localStorage
+      .getItem(`cityNames-localStorage`)
+      .split(",");
+    if (renderOneButton) {
       const button = document.createElement("button");
       button.classList.add("btn", "btn-primary");
-      button.innerText = localStorageValue[i];
+      button.value = localStorageValue[localStorageValue.length - 1];
+      button.innerText = localStorageValue[localStorageValue.length - 1];
+      button.addEventListener("click", searchAgain);
       document.getElementById("historyButtons").appendChild(button);
+    } else {
+      for (let i = 0; i < localStorageValue.length; i++) {
+        const button = document.createElement("button");
+        button.classList.add("btn", "btn-primary");
+        button.value = localStorageValue[i];
+        button.innerText = localStorageValue[i];
+        button.addEventListener("click", searchAgain);
+        document.getElementById("historyButtons").appendChild(button);
+      }
     }
   }
 }
 
-function searchCity(cityName) {
+function searchCity(cityName, isSearchButton) {
   const urlCityName = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
 
   fetch(urlCityName)
@@ -153,7 +163,7 @@ function searchCity(cityName) {
             "success",
             "danger"
           );
-          if (typeof localStorageValue === "object") {
+          if (typeof localStorageValue === "object" && isSearchButton) {
             //Save more cities
             localStorageValue.push(cityName);
             localStorage.setItem(
@@ -164,6 +174,10 @@ function searchCity(cityName) {
             //Save the first city
             localStorage.setItem(`cityNames-localStorage`, localStorageValue);
           }
+          setWeatherInformation(response);
+          if (isSearchButton) {
+            createHistoryButtons(true);
+          }
           setDaysForecast(cityName).then((data) => {
             const arrDays = [];
             for (let i = 0; i < 5; i++) {
@@ -171,8 +185,6 @@ function searchCity(cityName) {
             }
             setDaysForecastCards(arrDays);
           });
-          setWeatherInformation(response);
-          createHistoryButtons(true);
         }
         if (response.cod === "404") {
           alertMessage("ERROR, city not found!", "danger");
@@ -191,7 +203,7 @@ searchButton.addEventListener("click", () => {
   const cityName = document.getElementById("floatingInput").value;
   if (cityName !== "") {
     //call API
-    searchCity(cityName);
+    searchCity(cityName, true);
   } else {
     alertMessage("Please add a City", "danger");
   }
