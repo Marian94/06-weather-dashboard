@@ -119,18 +119,51 @@ function setDaysForecast(cityName) {
   return fetch(urlCityName).then((data) => data.json());
 }
 
+function createHistoryButtons(renderOneButton) {
+  const localStorageValue = localStorage
+    .getItem(`cityNames-localStorage`)
+    .split(",");
+  if (renderOneButton) {
+    const button = document.createElement("button");
+    button.classList.add("btn", "btn-primary");
+    button.innerText = localStorageValue[localStorageValue.length - 1];
+    document.getElementById("historyButtons").appendChild(button);
+  } else {
+    for (let i = 0; i < localStorageValue.length; i++) {
+      const button = document.createElement("button");
+      button.classList.add("btn", "btn-primary");
+      button.innerText = localStorageValue[i];
+      document.getElementById("historyButtons").appendChild(button);
+    }
+  }
+}
+
 function searchCity(cityName) {
   const urlCityName = `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
 
   fetch(urlCityName)
     .then(function (data) {
       data.json().then(function (response) {
+        const localStorageValue = localStorage.getItem(`cityNames-localStorage`)
+          ? localStorage.getItem(`cityNames-localStorage`).split()
+          : cityName;
         if (response.cod === 200) {
           alertMessage(
             `Here is the information of ${cityName}`,
             "success",
             "danger"
           );
+          if (typeof localStorageValue === "object") {
+            //Save more cities
+            localStorageValue.push(cityName);
+            localStorage.setItem(
+              `cityNames-localStorage`,
+              localStorageValue.toString()
+            );
+          } else {
+            //Save the first city
+            localStorage.setItem(`cityNames-localStorage`, localStorageValue);
+          }
           setDaysForecast(cityName).then((data) => {
             const arrDays = [];
             for (let i = 0; i < 5; i++) {
@@ -139,6 +172,7 @@ function searchCity(cityName) {
             setDaysForecastCards(arrDays);
           });
           setWeatherInformation(response);
+          createHistoryButtons(true);
         }
         if (response.cod === "404") {
           alertMessage("ERROR, city not found!", "danger");
@@ -162,3 +196,4 @@ searchButton.addEventListener("click", () => {
     alertMessage("Please add a City", "danger");
   }
 });
+createHistoryButtons(false);
