@@ -33,9 +33,10 @@ THEN I am again presented with current and future conditions for that city
 ## Mock-Up
 
 The following image shows the web application's appearance and functionality:
-You can't add a task in the schedule if the time is in past
+You can add a city and save the history of it
 ![The Quiz initial.](./img/image-1.png)
 
 ## Page
 
 You can see the functionality of this application in this link:
+https://marian94.github.io/06-weather-dashboard/
